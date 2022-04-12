@@ -1,44 +1,76 @@
-import { useState } from 'react'
-import logo from './logo.svg'
 import './App.css'
+import { useReducer } from 'react'
+import TodoItem from './components/Todo'
+import AddTodo from './components/AddTodo'
+import TodoTypes from './TodoTypes'
+import TodoContext from './TodoContext'
+import TodoContainer from './components/TodoContainer'
+import TodoStatusProgress from './components/TodoStatusProgress'
+import TodoReducer from './TodoReducer'
+import Container from '@mui/material/Container'
+import Navbar from './components/Navbar'
+
+
+TodoItem.propTypes = TodoTypes
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  const [state, dispatch] = useReducer(TodoReducer, {
+    todos: [],
+    todo: {
+      text: '',
+      amount: 0,
+      done: false
+    }
+  }) 
+
+  const addTodo = () => {
+    dispatch({
+      type: 'SET_TODOS',
+      payload: [...state.todos, {...state.todo, done: false}]
+    })
+    
+    dispatch({
+      type: 'SET_TODO',
+      payload: {
+        text: '',
+        amount: 0,
+        done: false
+      }
+    })
+  }
+
+  const markTodo = (idx) => {
+    const tmp = [...state.todos]
+    tmp[idx].done = !tmp[idx].done
+
+    dispatch({
+      type: 'SET_TODOS',
+      payload: tmp
+    })
+  }
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello Vite + React!</p>
-        <p>
-          <button type="button" onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code>App.jsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {' | '}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-      </header>
-    </div>
+    <TodoContext.Provider
+      value={{
+        markTodo,
+        addTodo,
+        state,
+        dispatch
+      }}
+    >
+      <Container maxWidth="sm" fixed  >
+        <Navbar/>
+        <h2>Monthly Expenses</h2>
+        <AddTodo />
+        <TodoContainer />
+        {
+          state.todos.length ?
+            <TodoStatusProgress /> :
+              null
+        }
+      </Container>
+    </TodoContext.Provider>
   )
 }
 
