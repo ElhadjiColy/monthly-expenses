@@ -2,13 +2,13 @@ import './App.css'
 import { useReducer } from 'react'
 import TodoItem from './components/Todo'
 import AddTodo from './components/AddTodo'
-import TodoTypes from './TodoTypes'
 import TodoContext from './TodoContext'
 import TodoContainer from './components/TodoContainer'
 import TodoStatusProgress from './components/TodoStatusProgress'
 import TodoReducer from './TodoReducer'
 import Container from '@mui/material/Container'
 import Navbar from './components/Navbar'
+import TodoTypes from './TodoTypes'
 
 
 TodoItem.propTypes = TodoTypes
